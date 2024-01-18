@@ -2,6 +2,7 @@ import { Button, StyleSheet, TextInput, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import { auth } from "../../firebase";
 import { useNavigation } from "@react-navigation/core";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ const Login = () => {
 
     const navigation = useNavigation();
 
+    const auth = getAuth();
     useEffect(() => {
         return auth.onAuthStateChanged(user => {
             if (user) {
@@ -18,7 +20,7 @@ const Login = () => {
     }, []);
 
     const signUp = async () => {
-        auth.createUserWithEmailAndPassword(email, password)
+        createUserWithEmailAndPassword(auth, email, password)
             .then(userCredentials => {
                 const user = userCredentials.user;
                 console.log("Registered user : ", user);
@@ -27,7 +29,7 @@ const Login = () => {
     }
 
     const signIn = async () => {
-        auth.signInWithEmailAndPassword(email, password)
+        signInWithEmailAndPassword(auth, email, password)
             .then(userCredentials => {
                 const user = userCredentials.user;
                 console.log("Current user : ", user);
@@ -56,7 +58,6 @@ const styles = StyleSheet.create({
     },
     input: {
         marginVertical:4,
-        flex: 1,
         height: 50,
         borderWidth: 1,
         borderRadius: 4,
