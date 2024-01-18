@@ -1,40 +1,50 @@
 import { Button, StyleSheet, TextInput, View } from "react-native";
 import React, { useState, useEffect } from "react";
-import { auth } from "../../firebase";
 import { useNavigation } from "@react-navigation/core";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const navigation = useNavigation();
-
     const auth = getAuth();
+
     useEffect(() => {
-        return auth.onAuthStateChanged(user => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
-                navigation.replace("Home");
+                const uid = user.uid;
+                console.log("User id :", uid);
+            } else {
+                console.log("Not logged in")
             }
         });
     }, []);
 
-    const signUp = async () => {
+    const signUp = () => {
+        console.log("auth", auth);
         createUserWithEmailAndPassword(auth, email, password)
             .then(userCredentials => {
                 const user = userCredentials.user;
                 console.log("Registered user : ", user);
             })
-            .catch(error => alert(error.message));
+            .catch((error) => {
+                console.error('Sign up error:', error.message);
+                alert(error.message);
+            });
     }
 
-    const signIn = async () => {
+    const signIn = () => {
+        console.log("auth", auth);
         signInWithEmailAndPassword(auth, email, password)
             .then(userCredentials => {
                 const user = userCredentials.user;
                 console.log("Current user : ", user);
             })
-            .catch(error => alert(error.message));
+            .catch((error) => {
+                console.error('Sign in error:', error.message);
+                alert(error.message);
+            });
     }
 
     return (
