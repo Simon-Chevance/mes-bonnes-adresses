@@ -1,22 +1,44 @@
-import {View, Text, Button, TextInput, StyleSheet} from "react-native";
-import React from "react";
-import { getAuth } from "firebase/auth";
+import { Button, StyleSheet, TextInput, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { auth } from "../../firebase";
+import { useNavigation } from "@react-navigation/core";
 
 const Login = () => {
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const auth = getAuth();
-    const signUp = async () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        return auth.onAuthStateChanged(user => {
+            if (user) {
+                navigation.replace("Home");
+            }
+        });
+    }, []);
+
+    const signUp = async () => {
+        auth.createUserWithEmailAndPassword(email, password)
+            .then(userCredentials => {
+                const user = userCredentials.user;
+                console.log("Registered user : ", user);
+            })
+            .catch(error => alert(error.message));
     }
 
     const signIn = async () => {
-
+        auth.signInWithEmailAndPassword(email, password)
+            .then(userCredentials => {
+                const user = userCredentials.user;
+                console.log("Current user : ", user);
+            })
+            .catch(error => alert(error.message));
     }
+
     return (
         <View style={styles.container}>
-            <TextInput style={styles.input} placeholder="Email" onChangeText={() => setEmail()} value={email}/>
-            <TextInput style={styles.input} textContentType={"password"} placeholder="Mot de passe" onChangeText={() => setPassword()} value={password}/>
+            <TextInput style={styles.input} placeholder="Email" onChangeText={text => setEmail(text)} value={email}/>
+            <TextInput style={styles.input} textContentType={"password"} placeholder="Mot de passe" onChangeText={text => setPassword(text)} value={password} secureTextEntry/>
 
             <Button title={"Create account"} onPress={signUp} />
             <Button title={"Sign In"} onPress={signIn} />
