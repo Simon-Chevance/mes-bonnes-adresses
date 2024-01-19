@@ -14,6 +14,10 @@ const Home = () => {
             .catch(error => alert(error.message));
     }
 
+    const handleGoToMap = () => {
+        navigation.navigate('MapScreen');
+    }
+
     return (
         <View style={styles.container}>
             <Text>Email: {auth.currentUser?.email}</Text>
@@ -22,6 +26,12 @@ const Home = () => {
                 style={styles.button}
             >
                 <Text style={styles.buttonText}>Sign out</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={handleGoToMap}
+                style={styles.button}
+            >
+                <Text style={styles.buttonText}>Go to Map</Text>
             </TouchableOpacity>
         </View>
     )
