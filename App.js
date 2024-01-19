@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -6,19 +5,20 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './app/screens/Login';
 import Home from './app/screens/Home';
 import MapScreen from "./app/screens/MapScreen";
+import AddressList from "./app/screens/AddressList";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-
-  return (
-      <NavigationContainer>
-          <Stack.Navigator>
-              <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-              <Stack.Screen name="Home" component={Home} />
-              <Stack.Screen name="MapScreen" component={MapScreen} />
-          </Stack.Navigator>
-      </NavigationContainer>
+    return (
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
+                <Stack.Screen name="Home" component={Home} />
+                <Stack.Screen name="MapScreen" component={MapScreen} />
+                <Stack.Screen name="AddressList" component={AddressList} />
+            </Stack.Navigator>
+        </NavigationContainer>
   );
 }
 
