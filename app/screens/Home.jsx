@@ -18,6 +18,10 @@ const Home = () => {
         navigation.navigate('MapScreen');
     }
 
+    const handleGoToAddressList = () => {
+        navigation.navigate('AddressList');
+    }
+
     return (
         <View style={styles.container}>
             <Text>Email: {auth.currentUser?.email}</Text>
@@ -31,7 +35,13 @@ const Home = () => {
                 onPress={handleGoToMap}
                 style={styles.button}
             >
-                <Text style={styles.buttonText}>Go to Map</Text>
+                <Text style={styles.buttonText}>Go to map</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={handleGoToAddressList}
+                style={styles.button}
+            >
+                <Text style={styles.buttonText}>Go to addresses list</Text>
             </TouchableOpacity>
         </View>
     )
