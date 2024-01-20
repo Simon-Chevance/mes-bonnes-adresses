@@ -2,18 +2,28 @@ import React, { useState, useEffect } from 'react';
 import {View, Text, Button, FlatList, TouchableOpacity, Modal, TextInput, Switch, Alert} from 'react-native';
 import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { GeoPoint } from "firebase/firestore"
+import { getAuth } from "firebase/auth";
 
 const db = getFirestore();
+const auth = getAuth();
 
-const AddressListItem = ({ address, onPress, onDelete }) => (
-    <TouchableOpacity onPress={onPress}>
-        <View style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
-            <Text>{address.name}</Text>
-            <Text>{address.description}</Text>
-        </View>
-        <Button title="Supprimer" onPress={() => onDelete(address.id)} />
-    </TouchableOpacity>
-);
+const AddressListItem = ({ address, onPress, onDelete, currentUser }) => {
+    const shouldDisplay = address.isPublic || (currentUser && address.ownerId === currentUser.uid);
+
+    if (!shouldDisplay) {
+        return null;
+    }
+
+    return (
+        <TouchableOpacity onPress={onPress}>
+            <View style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+                <Text>{address.name}</Text>
+                <Text>{address.description}</Text>
+            </View>
+            <Button title="Supprimer" onPress={() => onDelete(address.id)} />
+        </TouchableOpacity>
+    );
+};
 
 const AddressCreationModal = ({ isVisible, onClose, onCreateAddress }) => {
     const [newAddressName, setNewAddressName] = useState('');
@@ -38,7 +48,8 @@ const AddressCreationModal = ({ isVisible, onClose, onCreateAddress }) => {
                 description: newAddressDescription || 'Address Description',
                 isPublic: newAddressIsPublic,
                 location: new GeoPoint(latitude, longitude),
-                photoURL: newAddressPhotoURL || 'photoURL'
+                photoURL: newAddressPhotoURL || 'photoURL',
+                ownerId: auth.currentUser.uid
             });
             console.log('Created document: ', docRef.id);
 
@@ -120,6 +131,7 @@ const AddRemoveAddress = ({ addresses, onAddAddress, onRemoveAddress }) => {
                             address={item}
                             onPress={() => console.log('clic sur une adresse')}
                             onDelete={onRemoveAddress}
+                            currentUser={auth.currentUser}
                         />
                     )}
                 />
@@ -153,6 +165,8 @@ const AddressList = () => {
 
     useEffect(() => {
         fetchAddresses();
+        console.log(auth);
+        console.log("user : ", auth.currentUser)
     }, []);
 
     const addAddress = async () => {
