@@ -19,7 +19,9 @@ const AddressListItem = ({ address, onPress, onDelete, currentUser }) => {
                 <Text>{address.name}</Text>
                 <Text>{address.description}</Text>
             </View>
-            <Button title="Supprimer" onPress={() => onDelete(address.id)} />
+            {currentUser && address.ownerId === currentUser.uid && (
+                <Button title="Supprimer" onPress={() => onDelete(address.id)} />
+            )}
         </TouchableOpacity>
     );
 };
@@ -148,6 +150,7 @@ const AddressList = () => {
     const [addressList, setAddressList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const fetchAddresses = async () => {
         try {
@@ -157,7 +160,17 @@ const AddressList = () => {
                 id: doc.id,
                 ...doc.data()
             }));
-            setAddressList(addresses);
+
+            if (searchQuery) {
+                console.log("searchQuery: ", searchQuery);
+                const filteredAddresses = addresses.filter((address) =>
+                    address.name.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+                setAddressList(filteredAddresses);
+            } else {
+                setAddressList(addresses);
+            }
+
             setLoading(false);
             setError(null);
         } catch (err) {
@@ -171,7 +184,7 @@ const AddressList = () => {
         fetchAddresses();
         console.log(auth);
         console.log("user : ", auth.currentUser)
-    }, []);
+    }, [searchQuery]);
 
     const addAddress = async () => {
         fetchAddresses();
@@ -179,10 +192,14 @@ const AddressList = () => {
 
     const removeAddress = async (id) => {
         try {
-            await deleteDoc(doc(db, 'addresses', id));
-            setError(null);
-            fetchAddresses();
-            Alert.alert('Succès', "Suppression de l'adresse");
+            if (auth.currentUser && ownerId === auth.currentUser.uid) {
+                await deleteDoc(doc(db, 'addresses', id));
+                setError(null);
+                fetchAddresses();
+                Alert.alert('Succès', "Suppression de l'adresse");
+            } else {
+                Alert.alert('Erreur', "Vous n'êtes pas autorisé à supprimer cette adresse.");
+            }
         } catch (error) {
             console.error('Error removing address:', error);
             setError(error.message);
@@ -194,6 +211,11 @@ const AddressList = () => {
         <View>
             {loading && <Text>Loading...</Text>}
             {error && <Text style={{ color: 'red' }}>{error}</Text>}
+            <TextInput
+                placeholder="Rechercher une adresse ..."
+                value={searchQuery}
+                onChangeText={(text) => setSearchQuery(text)}
+            />
             <AddRemoveAddress
                 addresses={addressList}
                 onAddAddress={addAddress}
