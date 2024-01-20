@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {View, Text, Button, FlatList, TouchableOpacity, Modal, TextInput, Switch, Alert} from 'react-native';
-import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "firebase/firestore";
-import { GeoPoint } from "firebase/firestore"
+import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, GeoPoint } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const db = getFirestore();
@@ -32,23 +31,27 @@ const AddressCreationModal = ({ isVisible, onClose, onCreateAddress }) => {
     const [newAddressLatitude, setNewAddressLatitude] = useState('');
     const [newAddressLongitude, setNewAddressLongitude] = useState('');
     const [newAddressPhotoURL, setNewAddressPhotoURL] = useState('');
+    const [errorText, setErrorText] = useState('');
+
 
     const handleCreateAddress = async () => {
         const latitude = parseFloat(newAddressLatitude);
         const longitude = parseFloat(newAddressLongitude);
 
-        if (isNaN(latitude) || isNaN(longitude)) {
-            console.error('Invalid latitude or longitude values');
+        if (!newAddressName.trim() || !newAddressDescription.trim() || isNaN(latitude) || isNaN(longitude)) {
+            setErrorText('Les champs doivent être renseignés.');
             return;
         }
 
+        setErrorText('');
+
         try {
             const docRef = await addDoc(collection(db, 'addresses'), {
-                name: newAddressName || 'New Address',
-                description: newAddressDescription || 'Address Description',
+                name: newAddressName,
+                description: newAddressDescription,
                 isPublic: newAddressIsPublic,
                 location: new GeoPoint(latitude, longitude),
-                photoURL: newAddressPhotoURL || 'photoURL',
+                photoURL: newAddressPhotoURL,
                 ownerId: auth.currentUser.uid
             });
             console.log('Created document: ', docRef.id);
@@ -104,6 +107,7 @@ const AddressCreationModal = ({ isVisible, onClose, onCreateAddress }) => {
                     value={newAddressPhotoURL}
                     onChangeText={(text) => setNewAddressPhotoURL(text)}
                 />
+                <Text style={{ color: 'red' }}>{errorText}</Text>
                 <Button title="Créer" onPress={handleCreateAddress} />
                 <Button title="Annuler" onPress={onClose} />
             </View>
