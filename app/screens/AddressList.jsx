@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, Button, FlatList, TouchableOpacity, Modal, TextInput, Switch, Alert} from 'react-native';
+import { View, Text, Button, FlatList, TouchableOpacity, Modal, TextInput, Switch, Alert, StyleSheet } from 'react-native';
 import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, GeoPoint } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
@@ -14,11 +14,9 @@ const AddressListItem = ({ address, onPress, onDelete, currentUser }) => {
     }
 
     return (
-        <TouchableOpacity onPress={onPress}>
-            <View style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
-                <Text>{address.name}</Text>
-                <Text>{address.description}</Text>
-            </View>
+        <TouchableOpacity onPress={onPress} style={styles.listItem}>
+            <Text style={styles.listItemText}>{address.name}</Text>
+            <Text style={styles.listItemText}>{address.description}</Text>
             {currentUser && address.ownerId === currentUser.uid && (
                 <Button title="Supprimer" onPress={() => onDelete(address.id)} />
             )}
@@ -34,7 +32,6 @@ const AddressCreationModal = ({ isVisible, onClose, onCreateAddress }) => {
     const [newAddressLongitude, setNewAddressLongitude] = useState('');
     const [newAddressPhotoURL, setNewAddressPhotoURL] = useState('');
     const [errorText, setErrorText] = useState('');
-
 
     const handleCreateAddress = async () => {
         const latitude = parseFloat(newAddressLatitude);
@@ -74,44 +71,51 @@ const AddressCreationModal = ({ isVisible, onClose, onCreateAddress }) => {
     };
 
     return (
-        <Modal visible={isVisible} onRequestClose={onClose}>
-            <View style={{ padding: 20 }}>
-                <Text>Ajouter une adresse</Text>
-                <TextInput
-                    placeholder="Nom"
-                    value={newAddressName}
-                    onChangeText={(text) => setNewAddressName(text)}
-                />
-                <TextInput
-                    placeholder="Description"
-                    value={newAddressDescription}
-                    onChangeText={(text) => setNewAddressDescription(text)}
-                />
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text>Is Public:</Text>
-                    <Switch
-                        value={newAddressIsPublic}
-                        onValueChange={(value) => setNewAddressIsPublic(value)}
+        <Modal visible={isVisible} onRequestClose={onClose} animationType="slide">
+            <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                    <Text style={styles.modalTitle}>Ajouter une adresse</Text>
+                    <TextInput
+                        style={styles.inputField}
+                        placeholder="Nom"
+                        value={newAddressName}
+                        onChangeText={(text) => setNewAddressName(text)}
                     />
+                    <TextInput
+                        style={styles.inputField}
+                        placeholder="Description"
+                        value={newAddressDescription}
+                        onChangeText={(text) => setNewAddressDescription(text)}
+                    />
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                        <Text>Is Public:</Text>
+                        <Switch
+                            value={newAddressIsPublic}
+                            onValueChange={(value) => setNewAddressIsPublic(value)}
+                        />
+                    </View>
+                    <TextInput
+                        style={styles.inputField}
+                        placeholder="Latitude"
+                        value={newAddressLatitude}
+                        onChangeText={(text) => setNewAddressLatitude(text)}
+                    />
+                    <TextInput
+                        style={styles.inputField}
+                        placeholder="Longitude"
+                        value={newAddressLongitude}
+                        onChangeText={(text) => setNewAddressLongitude(text)}
+                    />
+                    <TextInput
+                        style={styles.inputField}
+                        placeholder="Photo"
+                        value={newAddressPhotoURL}
+                        onChangeText={(text) => setNewAddressPhotoURL(text)}
+                    />
+                    <Text style={styles.errorText}>{errorText}</Text>
+                    <Button title="Créer" onPress={handleCreateAddress} />
+                    <Button title="Annuler" onPress={onClose} />
                 </View>
-                <TextInput
-                    placeholder="Latitude"
-                    value={newAddressLatitude}
-                    onChangeText={(text) => setNewAddressLatitude(text)}
-                />
-                <TextInput
-                    placeholder="Longitude"
-                    value={newAddressLongitude}
-                    onChangeText={(text) => setNewAddressLongitude(text)}
-                />
-                <TextInput
-                    placeholder="Photo"
-                    value={newAddressPhotoURL}
-                    onChangeText={(text) => setNewAddressPhotoURL(text)}
-                />
-                <Text style={{ color: 'red' }}>{errorText}</Text>
-                <Button title="Créer" onPress={handleCreateAddress} />
-                <Button title="Annuler" onPress={onClose} />
             </View>
         </Modal>
     );
@@ -122,7 +126,7 @@ const AddRemoveAddress = ({ addresses, onAddAddress, onRemoveAddress }) => {
 
     return (
         <View>
-            <Button title="Ajouter" onPress={() => setModalVisible(true)} />
+            <Button title="Ajouter" onPress={() => setModalVisible(true)} style={styles.addButton} />
             <AddressCreationModal
                 isVisible={isModalVisible}
                 onClose={() => setModalVisible(false)}
@@ -155,14 +159,12 @@ const AddressList = () => {
     const fetchAddresses = async () => {
         try {
             const querySnapshot = await getDocs(collection(db, "addresses"));
-            console.log('Query Snapshot:', querySnapshot);
             const addresses = querySnapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data()
             }));
 
             if (searchQuery) {
-                console.log("searchQuery: ", searchQuery);
                 const filteredAddresses = addresses.filter((address) =>
                     address.name.toLowerCase().includes(searchQuery.toLowerCase())
                 );
@@ -182,8 +184,6 @@ const AddressList = () => {
 
     useEffect(() => {
         fetchAddresses();
-        console.log(auth);
-        console.log("user : ", auth.currentUser)
     }, [searchQuery]);
 
     const addAddress = async () => {
@@ -208,14 +208,15 @@ const AddressList = () => {
     };
 
     return (
-        <View>
-            {loading && <Text>Loading...</Text>}
-            {error && <Text style={{ color: 'red' }}>{error}</Text>}
+        <View style={styles.container}>
             <TextInput
+                style={styles.inputField}
                 placeholder="Rechercher une adresse ..."
                 value={searchQuery}
                 onChangeText={(text) => setSearchQuery(text)}
             />
+            {loading && <Text>Loading...</Text>}
+            {error && <Text style={{ color: 'red' }}>{error}</Text>}
             <AddRemoveAddress
                 addresses={addressList}
                 onAddAddress={addAddress}
@@ -226,3 +227,46 @@ const AddressList = () => {
 };
 
 export default AddressList;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 16,
+        backgroundColor: '#fff',
+    },
+    listItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+    },
+    listItemText: {
+        fontSize: 16,
+    },
+    addButton: {
+        marginVertical: 16,
+    },
+    modalContent: {
+        padding: 20,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    inputField: {
+        marginBottom: 10,
+        padding: 8,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 4,
+    },
+    errorText: {
+        color: 'red',
+        marginBottom: 10,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
+});
