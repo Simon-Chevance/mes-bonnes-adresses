@@ -72,8 +72,8 @@ const Login = () => {
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
             {loading ?(
-                <ActivityIndicator size="large" color="#0000ff"/>
-            ) :
+                    <ActivityIndicator size="large" color="#0000ff"/>
+                ) :
                 null
             }
         </View>
