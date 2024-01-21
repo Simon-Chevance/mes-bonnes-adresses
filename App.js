@@ -3,21 +3,16 @@ import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './app/screens/Login';
-import Home from './app/screens/Home';
-import MapScreen from "./app/screens/MapScreen";
-import AddressList from "./app/screens/AddressList";
-
+import TabNavigator from "./app/screens/TabNavigator";
+import { useAuthState } from "react-firebase-hooks/auth";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+
+
     return (
         <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-                <Stack.Screen name="Home" component={Home} />
-                <Stack.Screen name="MapScreen" component={MapScreen} />
-                <Stack.Screen name="AddressList" component={AddressList} />
-            </Stack.Navigator>
+            <TabNavigator/>
         </NavigationContainer>
   );
 }

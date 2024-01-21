@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/core";
 import React from 'react';
-import { auth } from "../../firebase";
+import { auth } from "../../../firebase";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const Home = () => {
@@ -22,15 +22,13 @@ const Home = () => {
         navigation.navigate('AddressList');
     }
 
+    const handleGoToProfile = () => {
+        navigation.navigate('ProfileScreen');
+    }
+
     return (
         <View style={styles.container}>
-            <Text>Email: {auth.currentUser?.email}</Text>
-            <TouchableOpacity
-                onPress={handleSignOut}
-                style={styles.button}
-            >
-                <Text style={styles.buttonText}>Sign out</Text>
-            </TouchableOpacity>
+            <Text style={styles.title}>Mes Bonnes Adresses</Text>
             <TouchableOpacity
                 onPress={handleGoToMap}
                 style={styles.button}
@@ -42,6 +40,18 @@ const Home = () => {
                 style={styles.button}
             >
                 <Text style={styles.buttonText}>Go to addresses list</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={handleGoToProfile}
+                style={styles.button}
+            >
+                <Text style={styles.buttonText}>Go to profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={handleSignOut}
+                style={styles.logoutButton}
+            >
+                <Text style={styles.buttonText}>Sign out</Text>
             </TouchableOpacity>
         </View>
     )
@@ -55,8 +65,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 30,
+        textAlign: 'center',
+    },
     button: {
         backgroundColor: '#0782F9',
+        width: '60%',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 40,
+    },
+    logoutButton: {
+        backgroundColor: '#FF3342',
         width: '60%',
         padding: 15,
         borderRadius: 10,
