@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/core";
 import React from 'react';
-import { auth } from "../../firebase";
+import { auth } from "../../../firebase";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const Home = () => {
@@ -53,6 +53,18 @@ const Home = () => {
             >
                 <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+                onPress={handleGoToProfile}
+                style={styles.button}
+            >
+                <Text style={styles.buttonText}>Go to profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={handleSignOut}
+                style={styles.logoutButton}
+            >
+                <Text style={styles.buttonText}>Sign out</Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -72,6 +84,12 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         textAlign: 'center',
         color: '#333333',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 30,
+        textAlign: 'center',
     },
     button: {
         backgroundColor: '#3498db', 
@@ -100,6 +118,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
         elevation: 2,
+    },
+    logoutButton: {
+        backgroundColor: '#FF3342',
+        width: '60%',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 40,
     },
     buttonText: {
         color: '#ffffff',
