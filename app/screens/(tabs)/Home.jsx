@@ -31,21 +31,21 @@ const Home = () => {
             <Text style={styles.title}>Mes Bonnes Adresses</Text>
             <TouchableOpacity
                 onPress={handleGoToMap}
-                style={styles.button}
+                style={styles.buttonMap}
             >
-                <Text style={styles.buttonText}>Go to map</Text>
+                <Text style={styles.buttonText}>Map</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={handleGoToAddressList}
                 style={styles.button}
             >
-                <Text style={styles.buttonText}>Go to addresses list</Text>
+                <Text style={styles.buttonText}>Addresses</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={handleGoToProfile}
                 style={styles.button}
             >
-                <Text style={styles.buttonText}>Go to profile</Text>
+                <Text style={styles.buttonText}>Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={handleSignOut}
@@ -63,7 +63,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: '#F7F7F7',
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        marginBottom: 30,
+        textAlign: 'center',
+        color: '#333333',
     },
     title: {
         fontSize: 24,
@@ -72,12 +80,32 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     button: {
-        backgroundColor: '#0782F9',
-        width: '60%',
-        padding: 15,
+        backgroundColor: '#3498db', 
+        width: '80%',
+        padding: 20,
         borderRadius: 10,
         alignItems: 'center',
-        marginTop: 40,
+        marginBottom: 20,
+        elevation: 2,
+    },
+    buttonMap: {
+        backgroundColor: '#3498db', 
+        width: '80%',
+        padding: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 20,
+        marginTop: 100,
+        elevation: 2,
+    },
+    logoutButton: {
+        backgroundColor: '#e74c3c',
+        width: '80%',
+        padding: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 20,
+        elevation: 2,
     },
     logoutButton: {
         backgroundColor: '#FF3342',
@@ -88,8 +116,8 @@ const styles = StyleSheet.create({
         marginTop: 40,
     },
     buttonText: {
-        color: 'white',
+        color: '#ffffff',
         fontWeight: '700',
-        fontSize: 16,
+        fontSize: 18,
     },
-})
+});

@@ -3,37 +3,25 @@ import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './app/screens/Login';
-import TabNavigator from "./app/screens/TabNavigator";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./firebase";
-import { ActivityIndicator } from "react-native";
+import Home from './app/screens/(tabs)/Home';
+import MapScreen from "./app/screens/(tabs)/MapScreen";
+import ProfileScreen from "./app/screens/(tabs)/ProfileScreen";
+import AddressList from "./app/screens/(tabs)/AddressList";
+import EditProfile from './app/screens/EditProfile';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-
-
-    const [user, loading] = useAuthState(auth);
     return (
         <NavigationContainer>
-        {loading ? (
-            <ActivityIndicator size="large" />
-        ) : (
             <Stack.Navigator>
-                {user ? (
-                <Stack.Screen
-                    name="TabNavigator"
-                    component={TabNavigator}
-                    options={{ headerShown: false }}
-                />
-            ) : (
-              <Stack.Screen
-                  name="Login"
-                  component={Login}
-                  options={{ headerShown: false }}
-                />
-              )}
-           </Stack.Navigator>
-        )}
+                <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
+                <Stack.Screen name="Home" component={Home} />
+                <Stack.Screen name="MapScreen" component={MapScreen} />
+                <Stack.Screen name="AddressList" component={AddressList} />
+                <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+                <Stack.Screen name="EditProfile" component={EditProfile} />
+            </Stack.Navigator>
         </NavigationContainer>
   );
 }

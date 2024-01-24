@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, ActivityIndicator, Modal, TextInput, Switch, Button} from 'react-native';
+import { View, Text, ActivityIndicator, Modal, TextInput, Switch, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { getFirestore, collection, getDocs, addDoc, GeoPoint } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
 
 const db = getFirestore();
-const auth = getAuth()
+const auth = getAuth();
 
 const createAddress = async ({ name, description, isPublic, latitude, longitude, ownerId }) => {
     try {
@@ -47,24 +47,19 @@ const MapScreen = () => {
     }, []);
 
     const getLocation = async () => {
-        //console.log("in getLocation")
         try {
             let { status } = await Location.requestForegroundPermissionsAsync();
-            //console.log("Permission status:", status);
             if (status !== 'granted') {
                 setErrorMsg('Permission to access location was denied');
             } else {
                 let location = await Location.getCurrentPositionAsync({});
-                //console.log("Location coordinates:", location.coords);
                 setLocation(location);
             }
-            //console.log("getLocation successful");
             setLoading(false);
         } catch (error) {
             console.error("Error in getLocation:", error.message);
             setErrorMsg('Error getting location');
         }
-        //console.log("out getLocation")
     };
 
     const fetchAddresses = async () => {
@@ -120,15 +115,15 @@ const MapScreen = () => {
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.container}>
             {loading ? (
-                <ActivityIndicator size="large" style={{ flex: 1, justifyContent: 'center' }} />
+                <ActivityIndicator size="large" style={styles.loadingIndicator} />
             ) : errorMsg ? (
-                <Text>{errorMsg}</Text>
+                <Text style={styles.errorText}>{errorMsg}</Text>
             ) : (
-                <View style={{ flex: 1 }}>
+                <View style={styles.mapContainer}>
                     <MapView
-                        style={{ flex: 1 }}
+                        style={styles.map}
                         initialRegion={{
                             latitude: location.coords.latitude,
                             longitude: location.coords.longitude,
@@ -160,28 +155,36 @@ const MapScreen = () => {
                     </MapView>
 
                     <Modal visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
-                        <View style={{ padding: 20 }}>
-                            <Text>Create New Address</Text>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.modalTitle}>Create New Address</Text>
                             <TextInput
+                                style={styles.inputField}
                                 placeholder="Name"
+                                placeholderTextColor="#CDCDCD"
                                 value={newAddressName}
                                 onChangeText={(text) => setNewAddressName(text)}
                             />
                             <TextInput
+                                style={styles.inputField}
                                 placeholder="Description"
+                                placeholderTextColor="#CDCDCD"
                                 value={newAddressDescription}
                                 onChangeText={(text) => setNewAddressDescription(text)}
                             />
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text>Is Public:</Text>
+                            <View style={styles.switchContainer}>
+                                <Text style={styles.switchLabel}>Is Public:</Text>
                                 <Switch
                                     value={newAddressPublic}
                                     onValueChange={(value) => setNewAddressPublic(value)}
                                 />
                             </View>
-                            <Text style={{ color: 'red' }}>{errorText}</Text>
-                            <Button title="Create" onPress={handleCreateAddress} />
-                            <Button title="Cancel" onPress={() => setModalVisible(false)} />
+                            <Text style={styles.errorText}>{errorText}</Text>
+                            <TouchableOpacity style={styles.button} onPress={handleCreateAddress}>
+                                <Text style={{ color: '#fff', textAlign: 'center', fontSize:18, fontWeight:'bold'}}>Ajouter </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
+                                <Text style={{ color: '#fff', textAlign: 'center', fontSize:18, fontWeight:'bold'}}>Annuler</Text>
+                            </TouchableOpacity>
                         </View>
                     </Modal>
                 </View>
@@ -189,5 +192,72 @@ const MapScreen = () => {
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    loadingIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    errorText: {
+        fontSize: 16,
+        color: 'red',
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    mapContainer: {
+        flex: 1,
+    },
+    map: {
+        flex: 1,
+    },
+    button: {
+        backgroundColor: '#5cb85c',
+        width: '60%',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        alignSelf: 'center',
+        marginBottom: 20,
+    },
+    cancelButton:{
+        backgroundColor: '#e74c3c',
+        width: '60%',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        alignSelf: 'center',
+    },
+    modalContent: {
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        elevation: 5,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        paddingTop: 50,
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    inputField: {
+        marginBottom: 15,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+    },
+    switchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 15,
+    },
+    switchLabel: {
+        marginRight: 10,
+    },
+});
 
 export default MapScreen;
