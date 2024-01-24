@@ -3,10 +3,10 @@ import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './app/screens/Login';
-import Home from './app/screens/Home';
-import MapScreen from "./app/screens/MapScreen";
-import ProfileScreen from "./app/screens/ProfileScreen";
-import AddressList from "./app/screens/AddressList";
+import Home from './app/screens/(tabs)/Home';
+import MapScreen from "./app/screens/(tabs)/MapScreen";
+import ProfileScreen from "./app/screens/(tabs)/ProfileScreen";
+import AddressList from "./app/screens/(tabs)/AddressList";
 import EditProfile from './app/screens/EditProfile';
 
 const Stack = createNativeStackNavigator();

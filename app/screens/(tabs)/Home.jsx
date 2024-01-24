@@ -51,18 +51,6 @@ const Home = () => {
                 onPress={handleSignOut}
                 style={styles.logoutButton}
             >
-                <Text style={styles.buttonText}>Logout</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={handleGoToProfile}
-                style={styles.button}
-            >
-                <Text style={styles.buttonText}>Go to profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={handleSignOut}
-                style={styles.logoutButton}
-            >
                 <Text style={styles.buttonText}>Sign out</Text>
             </TouchableOpacity>
         </View>
