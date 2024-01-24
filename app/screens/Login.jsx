@@ -1,4 +1,4 @@
-import {ActivityIndicator, Button, StyleSheet, TextInput, View} from "react-native";
+import {ActivityIndicator, Button, StyleSheet, TextInput, View, Text, TouchableOpacity} from "react-native";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
@@ -36,7 +36,6 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
-
     }
 
     const signIn = () => {
@@ -55,6 +54,7 @@ const Login = () => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Mes Bonnes Adresses</Text>
             <TextInput style={styles.input} placeholder="Email" onChangeText={text => setEmail(text)} value={email}/>
             <TextInput style={styles.input} textContentType={"password"} placeholder="Mot de passe" onChangeText={text => setPassword(text)} value={password} secureTextEntry/>
 
@@ -62,8 +62,18 @@ const Login = () => {
                 <ActivityIndicator size="large" color="#0000ff"/>
             ) : (
                 <>
-                    <Button title={"Login"} onPress={signIn} />
-                    <Button title={"Create account"} onPress={signUp} />
+                    <TouchableOpacity
+                        onPress={signIn}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Login</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={signUp}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Register</Text>
+                    </TouchableOpacity>
                 </>
             )}
         </View>
@@ -85,5 +95,25 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         padding: 10,
         backgroundColor: "#fff",
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 30,
+        textAlign: 'center',
+    },
+    button: {
+        backgroundColor: '#0782F9',
+        width: '60%',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 20,
+        alignSelf: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 16,
     },
 })

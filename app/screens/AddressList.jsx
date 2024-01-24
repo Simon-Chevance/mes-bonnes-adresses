@@ -15,10 +15,10 @@ const AddressListItem = ({ address, onPress, onDelete, currentUser }) => {
 
     return (
         <TouchableOpacity onPress={onPress} style={styles.listItem}>
-            <Text style={styles.listItemText}>{address.name}</Text>
-            <Text style={styles.listItemText}>{address.description}</Text>
+            <Text style={styles.listItemTitle}>{address.name}</Text>
+            <Text style={styles.listItemDescription}>{address.description}</Text>
             {currentUser && address.ownerId === currentUser.uid && (
-                <Button title="Supprimer" onPress={() => onDelete(address.id)} />
+                <Button title="Supprimer" onPress={() => onDelete(address.id)} color="#FF6961" />
             )}
         </TouchableOpacity>
     );
@@ -78,12 +78,14 @@ const AddressCreationModal = ({ isVisible, onClose, onCreateAddress }) => {
                     <TextInput
                         style={styles.inputField}
                         placeholder="Nom"
+                        placeholderTextColor="#CDCDCD"
                         value={newAddressName}
                         onChangeText={(text) => setNewAddressName(text)}
                     />
                     <TextInput
                         style={styles.inputField}
                         placeholder="Description"
+                        placeholderTextColor="#CDCDCD"
                         value={newAddressDescription}
                         onChangeText={(text) => setNewAddressDescription(text)}
                     />
@@ -97,24 +99,27 @@ const AddressCreationModal = ({ isVisible, onClose, onCreateAddress }) => {
                     <TextInput
                         style={styles.inputField}
                         placeholder="Latitude"
+                        placeholderTextColor="#CDCDCD"
                         value={newAddressLatitude}
                         onChangeText={(text) => setNewAddressLatitude(text)}
                     />
                     <TextInput
                         style={styles.inputField}
                         placeholder="Longitude"
+                        placeholderTextColor="#CDCDCD"
                         value={newAddressLongitude}
                         onChangeText={(text) => setNewAddressLongitude(text)}
                     />
                     <TextInput
                         style={styles.inputField}
                         placeholder="Photo"
+                        placeholderTextColor="#CDCDCD"
                         value={newAddressPhotoURL}
                         onChangeText={(text) => setNewAddressPhotoURL(text)}
                     />
                     <Text style={styles.errorText}>{errorText}</Text>
-                    <Button title="Créer" onPress={handleCreateAddress} />
-                    <Button title="Annuler" onPress={onClose} />
+                    <Button title="Créer" onPress={handleCreateAddress} color="#5cb85c" />
+                    <Button title="Annuler" onPress={onClose} color="#FF6961" />
                 </View>
             </View>
         </Modal>
@@ -126,7 +131,9 @@ const AddRemoveAddress = ({ addresses, onAddAddress, onRemoveAddress }) => {
 
     return (
         <View>
-            <Button title="Ajouter" onPress={() => setModalVisible(true)} style={styles.addButton} />
+            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.button}>
+            <Text style={{ color: '#fff', textAlign: 'center', fontSize:18, fontWeight:'bold'}}>Ajouter </Text>
+            </TouchableOpacity>
             <AddressCreationModal
                 isVisible={isModalVisible}
                 onClose={() => setModalVisible(false)}
@@ -190,7 +197,7 @@ const AddressList = () => {
         fetchAddresses();
     };
 
-    const removeAddress = async (id) => {
+    const removeAddress = async (id, ownerId) => {
         try {
             if (auth.currentUser && ownerId === auth.currentUser.uid) {
                 await deleteDoc(doc(db, 'addresses', id));
@@ -235,38 +242,57 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     listItem: {
-        padding: 10,
+        padding: 20,
         borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
+        borderBottomColor: '#ddd',
     },
-    listItemText: {
+    listItemTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        color: '#333',
+    },
+    listItemDescription: {
         fontSize: 16,
+        color: '#555',
     },
     addButton: {
         marginVertical: 16,
+        backgroundColor: '#5cb85c',
+    },
+    button: {
+        backgroundColor: '#5cb85c',
+        width: '60%',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        alignSelf: 'center',
+        marginBottom: 20,
     },
     modalContent: {
         padding: 20,
     },
     modalTitle: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 15,
+        color: '#333',
     },
     inputField: {
-        marginBottom: 10,
-        padding: 8,
+        marginBottom: 15,
+        padding: 12,
         borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 4,
+        borderColor: '#ddd',
+        borderRadius: 8,
+        color: '#333',
     },
     errorText: {
-        color: 'red',
-        marginBottom: 10,
+        color: '#FF6961',
+        marginBottom: 15,
     },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    }
+    },
 });

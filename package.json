@@ -14,13 +14,15 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "expo": "~50.0.2",
+    "expo-image-picker": "~14.7.1",
     "expo-location": "^16.5.2",
     "expo-status-bar": "~1.11.1",
     "firebase": "^10.7.2-canary.434f8418c",
     "metro-config": "^0.80.4",
     "react": "18.2.0",
     "react-native": "0.73.2",
-    "react-native-maps": "^1.9.1"
+    "react-native-maps": "^1.9.1",
+    "react-native-paper": "^5.12.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
